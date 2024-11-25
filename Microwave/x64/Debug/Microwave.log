@@ -1,0 +1,9 @@
+﻿  EBO.cpp
+  Main.cpp
+  shaderClass.cpp
+  stb.cpp
+  VAO.cpp
+  VBO.cpp
+D:\FTNAK\7semester\grafika\VirtualMicrowave\VAO.cpp(11,63): warning C4244: 'argument': conversion from 'GLsizeiptr' to 'GLsizei', possible loss of data
+  Generating Code...
+  Microwave.vcxproj -> D:\FTNAK\7semester\grafika\VirtualMicrowave\x64\Debug\Microwave.exe

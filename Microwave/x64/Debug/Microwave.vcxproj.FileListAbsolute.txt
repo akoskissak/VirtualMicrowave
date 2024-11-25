@@ -1,0 +1,2 @@
+D:\FTNAK\7semester\grafika\Microwave\x64\Debug\glew32.dll
+D:\FTNAK\7semester\grafika\VirtualMicrowave\x64\Debug\glew32.dll

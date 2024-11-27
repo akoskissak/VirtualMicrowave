@@ -1,9 +1,5 @@
-﻿  EBO.cpp
-  Main.cpp
-  shaderClass.cpp
-  stb.cpp
-  VAO.cpp
-  VBO.cpp
-D:\FTNAK\7semester\grafika\VirtualMicrowave\VAO.cpp(11,63): warning C4244: 'argument': conversion from 'GLsizeiptr' to 'GLsizei', possible loss of data
-  Generating Code...
+﻿  Main.cpp
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(110,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(111,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(365,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Microwave.vcxproj -> D:\FTNAK\7semester\grafika\VirtualMicrowave\x64\Debug\Microwave.exe

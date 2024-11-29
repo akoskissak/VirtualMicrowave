@@ -138,11 +138,17 @@
     <None Include="default.vert" />
     <None Include="door.frag" />
     <None Include="door.vert" />
+    <None Include="glass.frag" />
+    <None Include="glass.vert" />
+    <None Include="indicator.frag" />
+    <None Include="indicator.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="door.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="microwave.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -150,7 +156,10 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="door.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="microwave.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
@@ -160,6 +169,10 @@
     <Image Include="..\food.png" />
     <Image Include="..\microwave.png" />
     <Image Include="..\plate.png" />
+    <Image Include="background.png" />
+    <Image Include="door.png" />
+    <Image Include="inside.png" />
+    <Image Include="lamp.png" />
     <Image Include="lampoff.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

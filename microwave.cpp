@@ -1,8 +1,8 @@
 #include "microwave.h"
 #include "main.h"
-#include <GLFW/glfw3.h>  // Make sure GLFW is included here
+#include <GLFW/glfw3.h>
 
-void numClick(GLFWwindow* window) {
+int numClick(GLFWwindow* window) {
 	struct Rectangle {
 		float x1, x2, y1, y2;
 		int digit;
@@ -27,15 +27,17 @@ void numClick(GLFWwindow* window) {
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !wasMousePressed) {
 				std::cout << "NUM " << rect.digit << " clicked!" << std::endl;
 				wasMousePressed = true;
+				return rect.digit;
 			}
 			else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
 				wasMousePressed = false;
 			}
 		}
 	}
+	return -1;
 }
 
-void checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, DoorState doorState) {
+ButtonType checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, DoorState doorState, std::string& timer) {
 	struct Button {
 		float x1, x2, y1, y2;
 		ButtonType type;
@@ -52,14 +54,18 @@ void checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, DoorSt
 	for (const auto& button : buttons) {
 		if (isInsideRectangle(mousePos.x, mousePos.y, button.x1, button.x2, button.y1, button.y2)) {
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !wasMousePressed) {
-				if (button.type == ButtonType::Start && doorState == DoorState::Closed)
+				if (button.type == ButtonType::Start && doorState == DoorState::Closed && timer != "00:00")
 					microwaveState = MicrowaveState::Cooking;
 				else if (button.type == ButtonType::Stop)
 					microwaveState = MicrowaveState::Paused;
-				else if (button.type == ButtonType::Reset)
+				else if (button.type == ButtonType::Reset) {
 					microwaveState = MicrowaveState::Idle;
+					timer = "00:00";
+				}
+					
 				std::cout << "BUTTON " << button.type << " clicked! 0 - start, 1 - stop, 2 - reset" << std::endl;
 				wasMousePressed = true;
+				return button.type;
 			}
 		}
 	}

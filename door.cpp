@@ -23,6 +23,8 @@ void doorClick(GLFWwindow* window, DoorState& doorState, float& doorAnimationTim
                 doorState = DoorState::Opening;
                 if (microwaveState == MicrowaveState::Cooking)
                     microwaveState = MicrowaveState::Paused;
+                if (microwaveState == MicrowaveState::Finished)
+                    microwaveState = MicrowaveState::Idle;
                 doorAnimationTime = 0.0f;  // Reset animation time when opening starts
             }
         }
@@ -39,6 +41,8 @@ float doorOpeningAndClosing(GLFWwindow* window, float doorOpenFactor, DoorState&
         doorState = DoorState::Opening;
 		if (microwaveState == MicrowaveState::Cooking)
 			microwaveState = MicrowaveState::Paused;
+        if (microwaveState == MicrowaveState::Finished)
+            microwaveState = MicrowaveState::Idle;
         doorAnimationTime = 0.0f;  // Reset animation time when opening starts
     }
     else if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doorState == DoorState::Open) {

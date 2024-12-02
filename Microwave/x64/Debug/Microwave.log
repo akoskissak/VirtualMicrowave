@@ -1,5 +1,6 @@
 ﻿  Main.cpp
-D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(118,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(119,20): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(476,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(121,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(122,20): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(446,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FTNAK\7semester\grafika\VirtualMicrowave\Main.cpp(514,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Microwave.vcxproj -> D:\FTNAK\7semester\grafika\VirtualMicrowave\x64\Debug\Microwave.exe

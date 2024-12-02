@@ -1,4 +1,7 @@
 #include "main.h"
+#include <ft2build.h>
+
+#include FT_FREETYPE_H
 
 int windowWidth = 1800;  // Width of your window
 int windowHeight = 900; // Height of your window
@@ -119,9 +122,11 @@ void mouseCallback(GLFWwindow* window, double mouseX, double mouseY) {
 	mousePos.y = 1.0f - (2.0f * mouseY) / windowHeight;
 
 	// Print the normalized coordinates
-	std::cout << "Mouse X: " << mousePos.x << ", Mouse Y: " << mousePos.y << std::endl;
+	//std::cout << "Mouse X: " << mousePos.x << ", Mouse Y: " << mousePos.y << std::endl;
 }
 
+void updateTimer(std::string& timer, int number);
+bool updateTimer(std::string& timer);
 int main() {
 	const int numSegments = 50;  // Number of segments (e.g., 50)
 	float r = 0.1f;              // Radius of the circle
@@ -167,6 +172,7 @@ int main() {
 
 	glfwMakeContextCurrent(window);
 
+
 	if (glewInit() != GLEW_OK) //Slicno kao glfwInit. GLEW_OK je predefinisani izlazni kod za uspjesnu inicijalizaciju sadrzan unutar biblioteke
 	{
 		std::cout << "GLEW nije mogao da se ucita! :'(\n";
@@ -180,6 +186,7 @@ int main() {
 	Shader doorShader("door.vert", "door.frag");
 	Shader indicatorShader("indicator.vert", "indicator.frag");
 	Shader glassShader("glass.vert", "glass.frag");
+	Shader textShader("text.vert", "text.frag");
 
 	// Microwave VAO, VBO, EBO
 	VAO microwaveVAO;
@@ -286,6 +293,13 @@ int main() {
 	backgroundVBO.Unbind();
 	backgroundEBO.Unbind();
 
+	VAO textVAO;
+	textVAO.Bind();
+
+	VBO textVBO(sizeof(float) * 6 * 4);
+	textVAO.LinkAttrib(textVBO, 0, 4, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	textVAO.Unbind();
+	textVBO.Unbind();
 
 	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 	GLuint doorOpenFactorLocation = glGetUniformLocation(doorShader.ID, "doorOpenFactor");
@@ -319,6 +333,9 @@ int main() {
 	background.texUnit(shaderProgram, "tex6", 6);
 
 
+	Text textRenderer("fonts/digital-7.ttf", &textShader, windowWidth, windowHeight);
+	Text index("fonts/digital-7.ttf", &textShader, windowWidth, windowHeight);
+
 	glfwSetCursorPosCallback(window, mouseCallback);
 
 	MicrowaveState microwaveState = MicrowaveState::Idle;
@@ -339,6 +356,9 @@ int main() {
 
 	static bool wasGlassOn = true;
 	static bool isGlassOn = true;
+
+	std::string timer = "00:00";
+	float lastTime = 0.0f;
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
 		// Get the current time
@@ -349,14 +369,10 @@ int main() {
 			// Update the last frame time
 			lastFrameTime = currentFrameTime;
 
-
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
 			shaderProgram.Activate();
 
-			numClick(window);
-			checkButtonClick(window, microwaveState, doorState);
 			
 			glUniform1f(uniID, 0.5f);
 
@@ -414,10 +430,32 @@ int main() {
 			glUniform1f(indicatorTimeLoc, indicatorTime);
 			if (microwaveState == MicrowaveState::Cooking)
 				indicatorTime += 0.1f;
+			else if (microwaveState == MicrowaveState::Finished)
+				indicatorTime = -1.0f;
 			else
 				indicatorTime = 1.0f;
 			indicatorVAO.Bind();
 			glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(indic) / (2 * sizeof(float)));
+
+
+			if (microwaveState == MicrowaveState::Cooking) {
+				if (currentFrameTime - lastTime >= 1.0f) {
+					if (updateTimer(timer)) {	// kraj
+						microwaveState = MicrowaveState::Finished;
+					}
+					lastTime = currentFrameTime;
+				}
+			}
+			checkButtonClick(window, microwaveState, doorState, timer);
+
+			int pressedNumber = numClick(window);
+			if (pressedNumber != -1) {
+				updateTimer(timer, pressedNumber); // Update the time string based on input
+			}
+
+			textRenderer.RenderText(timer, 1360.0f, 200.0f, 1.2f, 0.5f, 0.7f, 1.0f);
+
+			index.RenderText("Kiss Akos RA11 2021", 20.0f, 820.0f, 1.0f, 0.0f, 0.1f, 0.1f);
 
 			if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 				glfwSetWindowShouldClose(window, true);
@@ -489,3 +527,40 @@ void updateLampTexture(MicrowaveState state, Texture& lampOn, Texture& lampOff) 
 	}
 }
 
+void updateTimer(std::string& timer, int number) {
+	if (number >= 0 && number <= 9) {
+		timer[0] = timer[1];
+		timer[1] = timer[3];
+		timer[3] = timer[4];
+		timer[4] = '0' + number;
+	}
+}
+
+// Function to decrease the timer
+bool updateTimer(std::string& timer) {
+	// Convert string "MM:SS" to minutes and seconds
+	int minutes = std::stoi(timer.substr(0, 2));
+	int seconds = std::stoi(timer.substr(3, 2));
+
+	// Decrease the time
+	if (seconds > 0) {
+		seconds--;
+	}
+	else if (minutes > 0) {
+		minutes--;
+		seconds = 59;
+	}
+
+	// Format the updated time back to "MM:SS"
+	timer = (minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+	if (timer == "00:00")
+		return true;
+	return false;
+}
+
+// Function to render the time in 00:00 format
+std::string formatTime(int remainingSeconds) {
+	int minutes = remainingSeconds / 60;
+	int seconds = remainingSeconds % 60;
+	return (minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+}

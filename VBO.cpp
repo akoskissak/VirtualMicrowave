@@ -1,10 +1,19 @@
 #include"VBO.h"
+#include <cstddef>
 
 VBO::VBO(GLfloat* vertices, GLsizeiptr size) 
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+}
+
+// Constructor for dynamic VBO
+VBO::VBO(GLsizeiptr size)
+{
+	glGenBuffers(1, &ID);
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+	glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 }
 
 void VBO::Bind()

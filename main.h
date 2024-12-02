@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
+#include <map>
 
 #include "shaderClass.h"
 #include "VAO.h"
@@ -12,6 +13,7 @@
 #include "Texture.h"
 #include "door.h"
 #include "microwave.h"
+#include "text.h"
 
 // Mouse position structure
 struct MousePosition {

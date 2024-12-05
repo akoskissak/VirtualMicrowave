@@ -1,7 +1,7 @@
 #include"Texture.h"
 
 Texture::Texture()
-    : ID(0), type(GL_TEXTURE_2D) // Default constructor with default values
+    : ID(0), type(GL_TEXTURE_2D)
 {
 }
 
@@ -46,18 +46,15 @@ Texture::Texture(FT_Bitmap& bitmap, GLenum texType, GLenum slot)
 {
     type = texType;
 
-    // Generate texture
     glGenTextures(1, &ID);
 
-    // Bind texture to specified slot
     glActiveTexture(slot);
     glBindTexture(texType, ID);
 
-    // Upload the FreeType bitmap to the GPU as a single-channel texture
     glTexImage2D(
         texType,
         0,
-        GL_RED,                       // FreeType bitmaps are single-channel
+        GL_RED,
         bitmap.width,
         bitmap.rows,
         0,
@@ -66,7 +63,6 @@ Texture::Texture(FT_Bitmap& bitmap, GLenum texType, GLenum slot)
         bitmap.buffer
     );
 
-    // Set texture filtering and wrapping
     glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

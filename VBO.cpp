@@ -8,7 +8,6 @@ VBO::VBO(GLfloat* vertices, GLsizeiptr size)
 	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
 
-// Constructor for dynamic VBO
 VBO::VBO(GLsizeiptr size)
 {
 	glGenBuffers(1, &ID);

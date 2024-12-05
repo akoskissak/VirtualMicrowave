@@ -12,11 +12,11 @@
 
 struct Character {
     Texture Texture;
-    int Width;            // Width of glyph
-    int Height;           // Height of glyph
-    int BearingX;         // Offset from baseline to left of glyph
-    int BearingY;         // Offset from baseline to top of glyph
-    GLuint Advance;       // Horizontal offset to advance to next glyph
+    int Width;
+    int Height;
+    int BearingX;
+    int BearingY;
+    GLuint Advance;
 };
 
 class Text {
@@ -31,7 +31,7 @@ public:
 
 private:
     void LoadCharacters(const std::string& fontPath);
-    float ProjectionMatrix[16]; // Simple orthographic projection matrix
+    float ProjectionMatrix[16];
 };
 
 #endif // TEXT_H

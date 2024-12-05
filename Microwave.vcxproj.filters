@@ -52,6 +52,18 @@
     <None Include="text.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="smoke.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="smoke.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="black.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="black.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

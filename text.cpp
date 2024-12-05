@@ -22,8 +22,10 @@ Text::Text(const std::string& fontPath, Shader* shaderProgram, int screenWidth, 
     VAO.Unbind();
     VBO.Unbind();
 
-    // Create orthographic projection matrix
-    for (int i = 0; i < 16; i++) ProjectionMatrix[i] = 0.0f;
+	// Kreiranje ortogonalne projekcije
+    for (int i = 0; i < 16; i++) 
+        ProjectionMatrix[i] = 0.0f;
+
     ProjectionMatrix[0] = 2.0f / screenWidth;
     ProjectionMatrix[5] = -2.0f / screenHeight;
     ProjectionMatrix[10] = -1.0f;

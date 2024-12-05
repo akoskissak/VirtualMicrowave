@@ -6,7 +6,7 @@ uniform int isGlassOn;
 
 void main() {
     if(isGlassOn == 1){
-        FragColor = vec4(0.3f, 0.2f, 0.5f, 0.8f);
+        FragColor = vec4(0.0f, 0.1f, 0.8f, 0.6f);
     }
     else{
 		FragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);

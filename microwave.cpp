@@ -1,8 +1,7 @@
 #include "microwave.h"
-#include "main.h"
-#include <GLFW/glfw3.h>
 
-int numClick(GLFWwindow* window) {
+
+int numClick(GLFWwindow* window, irrklang::ISoundEngine* soundEngine) {
 	struct Rectangle {
 		float x1, x2, y1, y2;
 		int digit;
@@ -25,7 +24,8 @@ int numClick(GLFWwindow* window) {
 	for (const auto& rect : rectangles) {
 		if (isInsideRectangle(mousePos.x, mousePos.y, rect.x1, rect.x2, rect.y1, rect.y2)) {
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !wasMousePressed) {
-				std::cout << "NUM " << rect.digit << " clicked!" << std::endl;
+				//std::cout << "NUM " << rect.digit << " clicked!" << std::endl;
+				soundEngine->play2D("media/beep.wav", false);
 				wasMousePressed = true;
 				return rect.digit;
 			}
@@ -54,7 +54,10 @@ ButtonType checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, 
 	for (const auto& button : buttons) {
 		if (isInsideRectangle(mousePos.x, mousePos.y, button.x1, button.x2, button.y1, button.y2)) {
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !wasMousePressed) {
-				if (button.type == ButtonType::Start && doorState == DoorState::Closed && timer != "00:00")
+				if (microwaveState == MicrowaveState::Error) {
+					break;
+				}
+				else if (button.type == ButtonType::Start && doorState == DoorState::Closed && timer != "00:00")
 					microwaveState = MicrowaveState::Cooking;
 				else if (button.type == ButtonType::Stop)
 					microwaveState = MicrowaveState::Paused;
@@ -63,14 +66,13 @@ ButtonType checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, 
 					timer = "00:00";
 				}
 					
-				std::cout << "BUTTON " << button.type << " clicked! 0 - start, 1 - stop, 2 - reset" << std::endl;
+				//std::cout << "BUTTON " << button.type << " clicked! 0 - start, 1 - stop, 2 - reset" << std::endl;
 				wasMousePressed = true;
 				return button.type;
 			}
+			else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+				wasMousePressed = false;
+			}
 		}
-	}
-
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-		wasMousePressed = false;
 	}
 }

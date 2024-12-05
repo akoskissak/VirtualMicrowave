@@ -1,9 +1,10 @@
-#ifndef DOOR_H
-#define DOOR_H
+#pragma once
 
-#include <GL/glew.h>    // Include GLEW first
-#include <GLFW/glfw3.h>  // GLFW or other OpenGL-related libraries
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <GL/gl.h> 
+#include "irrklang/irrKlang.h"
+#include "main.h"
 
 enum class MicrowaveState;
 
@@ -15,9 +16,6 @@ enum class DoorState {
 };
 
 // Function declarations
-void doorClick(GLFWwindow* window, DoorState& doorState, float& doorAnimationTime, MicrowaveState &microwaveState);
+void doorClick(GLFWwindow* window, DoorState& doorState, float& doorAnimationTime, MicrowaveState &microwaveState, irrklang::ISoundEngine* soundEngine);
 bool isInsideRectangle(float x, float y, float rectX1, float rectX2, float rectY1, float rectY2);
-float doorOpeningAndClosing(GLFWwindow* window, float doorOpenFactor, DoorState& doorState, float& doorAnimationTime, MicrowaveState &microwaveState);
-
-#endif
-
+float doorOpeningAndClosing(GLFWwindow* window, float doorOpenFactor, DoorState& doorState, float& doorAnimationTime, MicrowaveState &microwaveState, irrklang::ISoundEngine* soundEngine);

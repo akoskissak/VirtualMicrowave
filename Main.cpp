@@ -1,16 +1,19 @@
-#include "main.h"
+﻿#include "main.h"
 #include <ft2build.h>
+
 
 #include FT_FREETYPE_H
 
-int windowWidth = 1800;  // Width of your window
-int windowHeight = 900; // Height of your window
+using namespace irrklang;
 
-float microwaveAspect = 653.0f / 376.0f;
+int windowWidth = 1800;
+int windowHeight = 900;
+
 float plateAspect = 1280.0f / 640.0f;
 float foodAspect = 531.0f / 400.0f;
 
 float scale = 1.8f;
+// proporcijski odnosi
 float microwaveWidth = 0.81625f * scale;
 float microwaveHeight = 0.83556f * scale;
 
@@ -22,27 +25,29 @@ float foodHeight = foodWidth / foodAspect;
 
 // Microwave rectangle vertices
 GLfloat microwaveVertices[] = {
-	// X         Y            R     G     B     U     V
-	-microwaveWidth / 2, -microwaveHeight / 2, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-	-microwaveWidth / 2,  microwaveHeight / 2, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-	 microwaveWidth / 2,  microwaveHeight / 2, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-	 microwaveWidth / 2, -microwaveHeight / 2, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f
+	// X                           Y            U     V
+	-microwaveWidth / 2, -microwaveHeight / 2, 0.0f, 0.0f,
+	-microwaveWidth / 2,  microwaveHeight / 2, 0.0f, 1.0f,
+	 microwaveWidth / 2,  microwaveHeight / 2, 1.0f, 1.0f,
+	 microwaveWidth / 2, -microwaveHeight / 2, 1.0f, 0.0f
 };
 
 // Plate rectangle vertices
 GLfloat plateVertices[] = {
-	-plateWidth / 2 - .15f, -plateHeight / 2 - 0.1f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f, // Bottom-left
-	-plateWidth / 2 - .15f,  plateHeight / 2 - 0.1f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, // Top-left
-	 plateWidth / 2 - .15f,  plateHeight / 2 - 0.1f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, // Top-right
-	 plateWidth / 2 - .15f, -plateHeight / 2 - 0.1f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f  // Bottom-right
+	// X                           Y                   U     V
+	-plateWidth / 2 - .15f, -plateHeight / 2 - 0.25f, 0.0f, 0.0f,
+	-plateWidth / 2 - .15f,  plateHeight / 2 - 0.25f, 0.0f, 1.0f,
+	 plateWidth / 2 - .15f,  plateHeight / 2 - 0.25f, 1.0f, 1.0f,
+	 plateWidth / 2 - .15f, -plateHeight / 2 - 0.25f, 1.0f, 0.0f
 };
 
 // Food rectangle vertices
 GLfloat foodVertices[] = {
-	-foodWidth / 2 - .18f, -foodHeight / 2 - 0.005f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f, // Bottom-left
-	-foodWidth / 2 - .18f,  foodHeight / 2 - 0.005f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, // Top-left
-	 foodWidth / 2 - .18f,  foodHeight / 2 - 0.005f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, // Top-right
-	 foodWidth / 2 - .18f, -foodHeight / 2 - 0.005f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f  // Bottom-right
+	// X                           Y                 U     V
+	-foodWidth / 2 - .18f, -foodHeight / 2 - 0.18f, 0.0f, 0.0f,
+	-foodWidth / 2 - .18f,  foodHeight / 2 - 0.18f, 0.0f, 1.0f,
+	 foodWidth / 2 - .18f,  foodHeight / 2 - 0.18f, 1.0f, 1.0f,
+	 foodWidth / 2 - .18f, -foodHeight / 2 - 0.18f, 1.0f, 0.0f
 };
 
 float doorWidth = microwaveWidth;
@@ -50,11 +55,11 @@ float doorHeight = microwaveHeight;
 
 // Microwave Door vertices
 GLfloat doorVertices[] = {
-	// X         Y            R     G     B     U     V
-	-doorWidth / 2, -doorHeight / 2,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Bottom-left
-	-doorWidth / 2,  doorHeight / 2,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, // Top-left
-	 doorWidth / 2,  doorHeight / 2,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Top-right
-	 doorWidth / 2, -doorHeight / 2,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f  // Bottom-right
+	// X                     Y         U     V
+	-doorWidth / 2 + 0.0005f, -doorHeight / 2,  0.0f, 0.0f,
+	-doorWidth / 2 + 0.0005f,  doorHeight / 2,  0.0f, 1.0f,
+	 doorWidth / 2 + 0.0005f,  doorHeight / 2,  1.0f, 1.0f,
+	 doorWidth / 2 + 0.0005f, -doorHeight / 2,  1.0f, 0.0f
 };
 
 float insideWidth = doorWidth;
@@ -62,100 +67,68 @@ float insideHeight = doorHeight;
 
 // Microwave Inside vertices
 GLfloat insideVertices[] = {
-	// X         Y            R     G     B     U     V
-	-insideWidth / 2, -insideHeight / 2,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Bottom-left
-	-insideWidth / 2,  insideHeight / 2,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, // Top-left
-	 insideWidth / 2,  insideHeight / 2,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Top-right
-	 insideWidth / 2, -insideHeight / 2,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f  // Bottom-right
+	// X                      Y            U     V
+	-insideWidth / 2, -insideHeight / 2, 0.0f, 0.0f,
+	-insideWidth / 2,  insideHeight / 2, 0.0f, 1.0f,
+	 insideWidth / 2,  insideHeight / 2, 1.0f, 1.0f,
+	 insideWidth / 2, -insideHeight / 2, 1.0f, 0.0f
 };
 
+// Glass vertices
 GLfloat glassVertices[] = {
-	// X						Y					 R		G     B     U     V
-	-doorWidth / 3 - 0.15f, -doorHeight / 3 + 0.1f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Bottom-left
-	-doorWidth / 3 - 0.15f,  doorHeight / 3 + 0.1f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, // Top-left
-	 doorWidth / 3 - 0.15f,  doorHeight / 3 + 0.1f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Top-right
-	 doorWidth / 3 - 0.15f, -doorHeight / 3 + 0.1f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f  // Bottom-right
+	// X						       Y		
+	-doorWidth / 3 - 0.15f, -doorHeight / 3 + 0.1f,
+	-doorWidth / 3 - 0.15f,  doorHeight / 3 + 0.1f,
+	 doorWidth / 3 - 0.15f,  doorHeight / 3 + 0.1f,
+	 doorWidth / 3 - 0.15f, -doorHeight / 3 + 0.1f
 };
 
 GLfloat backgroundVertices[] = {
-	// X    Y      R     G     B     U     V
-	-1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  // Bottom-left
-	-1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, // Top-left
-	 1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Top-right
-	 1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f // Bottom-right
+	// X     Y      U     V
+	-1.0f, -1.0f, 0.0f, 0.0f,
+	-1.0f,  1.0f, 0.0f, 1.0f,
+	 1.0f,  1.0f, 1.0f, 1.0f,
+	 1.0f, -1.0f, 1.0f, 0.0f
 };
 
-GLuint microwaveIndices[] = {
-	0, 1, 2, 0, 2, 3 // Microwave
+GLfloat blackbackgroundVertices[] = {
+	// X     Y   
+	-1.0f, -1.0f,
+	-1.0f,  1.0f,
+	 1.0f,  1.0f,
+	 1.0f, -1.0f,
 };
 
-GLuint plateIndices[] = {
-	0, 1, 2, 0, 2, 3 // Plate
-};
-
-GLuint foodIndices[] = {
-	0, 1, 2, 0, 2, 3 // Food
-};
-
-GLuint doorIndices[] = {
-	0, 1, 2, 0, 2, 3   // Door
-};
-
-GLuint insideIndices[] = {
-	0, 1, 2, 0, 2, 3   // Inside
-};
-
-GLuint glassIndices[] = {
-	0, 1, 2, 0, 2, 3   // Glass
-};
-
-GLuint backgroundIndices[] = {
-	0, 1, 2, 0, 2, 3   // Background
+GLuint indices[] = {
+	0, 1, 2, 0, 2, 3
 };
 
 MousePosition mousePos = { 0.0f, 0.0f };
 
-// Mouse callback function
 void mouseCallback(GLFWwindow* window, double mouseX, double mouseY) {
-	// Convert to normalized device coordinates (NDC)
+	// konvertovanje u normalizovane koordinate
 	mousePos.x = (2.0f * mouseX) / windowWidth - 1.0f;
 	mousePos.y = 1.0f - (2.0f * mouseY) / windowHeight;
 
-	// Print the normalized coordinates
 	//std::cout << "Mouse X: " << mousePos.x << ", Mouse Y: " << mousePos.y << std::endl;
 }
 
-void updateTimer(std::string& timer, int number);
-bool updateTimer(std::string& timer);
 int main() {
-	const int numSegments = 50;  // Number of segments (e.g., 50)
-	float r = 0.1f;              // Radius of the circle
-	float centerX = -0.38f;      // Center X0
-	float centerY = 0.3f;        // Center Y0
-
-	float ri = 0.03f;
-	float centerXi = 0.63f;
-	float centerYi = -0.3f;
-
-	float lamp[(numSegments + 2) * 2];  // Total points: center + perimeter
-	float indic[(numSegments + 2) * 2]; // Total points: center + perimeter
-	generateCircleVertices(lamp, numSegments, centerX, centerY, r);
-	generateCircleVertices(indic, numSegments, centerXi, centerYi, ri);
-
 	if (!glfwInit()) // !0 == 1; glfwInit inicijalizuje GLFW i vrati 1 ako je inicijalizovana uspjesno, a 0 ako nije
 	{
 		std::cout << "GLFW Biblioteka se nije ucitala! :(\n";
 		return 1;
 	}
+
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-
-
 	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
 
+	// centar monitora
 	int xPos = (videoMode->width - windowWidth) / 2;
 	int yPos = (videoMode->height - windowHeight) / 2;
 
@@ -179,55 +152,72 @@ int main() {
 		return 3;
 	}
 
+
+	ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+	if (!soundEngine) {
+		std::cerr << "Could not initialize sound engine" << std::endl;
+		return -1;
+	}
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	const int numSegments = 50;
+	float r = 0.05f;
+	float centerX = -0.38f;
+	float centerY = 0.3f;
+
+	float ri = 0.03f;
+	float centerXi = 0.63f;
+	float centerYi = -0.3f;
+
+	float lamp[(numSegments + 2) * 2];
+	float indic[(numSegments + 2) * 2];
+	generateCircleVertices(lamp, numSegments, centerX, centerY, r);
+	generateCircleVertices(indic, numSegments, centerXi, centerYi, ri);
 
 	Shader shaderProgram("default.vert", "default.frag");
 	Shader doorShader("door.vert", "door.frag");
 	Shader indicatorShader("indicator.vert", "indicator.frag");
 	Shader glassShader("glass.vert", "glass.frag");
 	Shader textShader("text.vert", "text.frag");
+	Shader smokeShader("smoke.vert", "smoke.frag");
+	Shader blackShader("black.vert", "black.frag");
 
-	// Microwave VAO, VBO, EBO
 	VAO microwaveVAO;
 	microwaveVAO.Bind();
 
+	EBO sharedEBO(indices, sizeof(indices));
+	sharedEBO.Bind();
+
 	VBO microwaveVBO(microwaveVertices, sizeof(microwaveVertices));
-	EBO microwaveEBO(microwaveIndices, sizeof(microwaveIndices));
-	microwaveVAO.LinkAttrib(microwaveVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	microwaveVAO.LinkAttrib(microwaveVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	microwaveVAO.LinkAttrib(microwaveVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	microwaveVAO.LinkAttrib(microwaveVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	microwaveVAO.LinkAttrib(microwaveVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	microwaveVAO.Unbind();
 	microwaveVBO.Unbind();
-	microwaveEBO.Unbind();
 
-	// Plate VAO, VBO, EBO
 	VAO plateVAO;
 	plateVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO plateVBO(plateVertices, sizeof(plateVertices));
-	EBO plateEBO(plateIndices, sizeof(plateIndices));
-	plateVAO.LinkAttrib(plateVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	plateVAO.LinkAttrib(plateVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	plateVAO.LinkAttrib(plateVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	plateVAO.LinkAttrib(plateVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	plateVAO.LinkAttrib(plateVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	plateVAO.Unbind();
 	plateVBO.Unbind();
-	plateEBO.Unbind();
 
-	// Food VAO, VBO, EBO
 	VAO foodVAO;
 	foodVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO foodVBO(foodVertices, sizeof(foodVertices));
-	EBO foodEBO(foodIndices, sizeof(foodIndices));
-	foodVAO.LinkAttrib(foodVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	foodVAO.LinkAttrib(foodVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	foodVAO.LinkAttrib(foodVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	foodVAO.LinkAttrib(foodVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	foodVAO.LinkAttrib(foodVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	foodVAO.Unbind();
 	foodVBO.Unbind();
-	foodEBO.Unbind();
 
-	// Lamp VAO, VBO, EBO
 	VAO lampVAO;
 	lampVAO.Bind();
 
@@ -236,33 +226,28 @@ int main() {
 	lampVAO.Unbind();
 	lampVBO.Unbind();
 
-	// Door VAO, VBO, EBO
 	VAO doorVAO;
 	doorVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO doorVBO(doorVertices, sizeof(doorVertices));
-	EBO doorEBO(doorIndices, sizeof(doorIndices));
-	doorVAO.LinkAttrib(doorVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	doorVAO.LinkAttrib(doorVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	doorVAO.LinkAttrib(doorVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	doorVAO.LinkAttrib(doorVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	doorVAO.LinkAttrib(doorVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	doorVAO.Unbind();
 	doorVBO.Unbind();
-	doorEBO.Unbind();
 
-	// Inside VAO, VBO, EBO
 	VAO insideVAO;
 	insideVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO insideVBO(insideVertices, sizeof(insideVertices));
-	EBO insideEBO(insideIndices, sizeof(insideIndices));
-	insideVAO.LinkAttrib(insideVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	insideVAO.LinkAttrib(insideVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	insideVAO.LinkAttrib(insideVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	insideVAO.LinkAttrib(insideVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	insideVAO.LinkAttrib(insideVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	insideVAO.Unbind();
 	insideVBO.Unbind();
-	insideEBO.Unbind();
 
-	// Indicator VAO, VBO
 	VAO indicatorVAO;
 	indicatorVAO.Bind();
 
@@ -274,24 +259,24 @@ int main() {
 	VAO glassVAO;
 	glassVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO glassVBO(glassVertices, sizeof(glassVertices));
-	EBO glassEBO(glassIndices, sizeof(glassIndices));
-	glassVAO.LinkAttrib(glassVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
+	glassVAO.LinkAttrib(glassVBO, 0, 2, GL_FLOAT, 2 * sizeof(float), (void*)0);
 	glassVAO.Unbind();
 	glassVBO.Unbind();
-	glassEBO.Unbind();
 
 	VAO backgroundVAO;
 	backgroundVAO.Bind();
 
+	sharedEBO.Bind();
+
 	VBO backgroundVBO(backgroundVertices, sizeof(backgroundVertices));
-	EBO backgroundEBO(backgroundIndices, sizeof(backgroundIndices));
-	backgroundVAO.LinkAttrib(backgroundVBO, 0, 2, GL_FLOAT, 7 * sizeof(float), (void*)0);
-	backgroundVAO.LinkAttrib(backgroundVBO, 1, 3, GL_FLOAT, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-	backgroundVAO.LinkAttrib(backgroundVBO, 2, 2, GL_FLOAT, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	backgroundVAO.LinkAttrib(backgroundVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	backgroundVAO.LinkAttrib(backgroundVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	backgroundVAO.Unbind();
 	backgroundVBO.Unbind();
-	backgroundEBO.Unbind();
+
 
 	VAO textVAO;
 	textVAO.Bind();
@@ -301,36 +286,62 @@ int main() {
 	textVAO.Unbind();
 	textVBO.Unbind();
 
-	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+	VAO smokeVAO;
+	smokeVAO.Bind();
+
+	sharedEBO.Bind();
+	VBO smokeVBO(backgroundVertices, sizeof(backgroundVertices));
+	smokeVAO.LinkAttrib(smokeVBO, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	smokeVAO.LinkAttrib(smokeVBO, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	smokeVAO.Unbind();
+	smokeVBO.Unbind();
+
+	VAO blackVAO;
+	blackVAO.Bind();
+
+
+	sharedEBO.Bind();
+
+	VBO blackVBO(blackbackgroundVertices, sizeof(blackbackgroundVertices));
+	blackVAO.LinkAttrib(blackVBO, 0, 2, GL_FLOAT, 2 * sizeof(float), (void*)0);
+	blackVAO.Unbind();
+	blackVBO.Unbind();
+	sharedEBO.Unbind();
+
 	GLuint doorOpenFactorLocation = glGetUniformLocation(doorShader.ID, "doorOpenFactor");
 	GLuint indicatorTimeLoc = glGetUniformLocation(indicatorShader.ID, "time");
 	GLboolean isGlassOnLoc = glGetUniformLocation(glassShader.ID, "isGlassOn");
+	GLfloat smokeScaleLoc = glGetUniformLocation(smokeShader.ID, "scale");
+	GLfloat smokeOpacityLoc = glGetUniformLocation(smokeShader.ID, "opacity");
+	GLfloat lightIntensityLoc = glGetUniformLocation(blackShader.ID, "lightning");
 
 	// Texture
-	
+	Texture background("background.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	background.texUnit(shaderProgram, "tex0", 0);
+
 	Texture microwave("microwave.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	microwave.texUnit(shaderProgram, "tex0", 0);
 
 	Texture plate("plate.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	plate.texUnit(shaderProgram, "tex1", 1);
+
+	Texture plateCook("plateCook.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 
 	Texture food("food.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	food.texUnit(shaderProgram, "tex2", 2);
+
+	Texture foodCook("foodCook.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 
 	Texture lampOn("lamp.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	lampOn.texUnit(shaderProgram, "tex3", 3);
 
 	Texture lampOff("lampoff.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	lampOff.texUnit(shaderProgram, "tex3", 3);
 
 	Texture door("door.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	door.texUnit(shaderProgram, "tex4", 4);
+	door.texUnit(doorShader, "tex0", 0);
 
 	Texture inside("inside.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	inside.texUnit(shaderProgram, "tex5", 5);
 
-	Texture background("background.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	background.texUnit(shaderProgram, "tex6", 6);
+	Texture insideOn("insideOn.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+
+	Texture smoke("smoke1.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	smoke.texUnit(smokeShader, "tex0", 0);
 
 
 	Text textRenderer("fonts/digital-7.ttf", &textShader, windowWidth, windowHeight);
@@ -340,66 +351,109 @@ int main() {
 
 	MicrowaveState microwaveState = MicrowaveState::Idle;
 
+	MicrowaveState previousState = MicrowaveState::Idle;
+
 	static float doorOpenFactor = 0.0f;
 	DoorState doorState = DoorState::Closed;
 	static float doorAnimationTime = 0.0f;
 
-	// Variables to control frame rate
-	const double TARGET_FPS = 60.0;
-	const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;  // ~16.67 ms per frame
 
-	double lastFrameTime = 0.0;  // Store the time of the last frame
+	const double TARGET_FPS = 60.0;
+	const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;
+
+	double lastFrameTime = 0.0;
 	double currentFrameTime = 0.0;
-	double deltaTime = 0.0;  // Store the time difference between frames
+	double deltaTime = 0.0;
 
 	float indicatorTime = 0.0f;
 
 	static bool wasGlassOn = true;
 	static bool isGlassOn = true;
 
+	// Pokvarenje mikrotalasne
+	static bool wasXKeyPressed = false;
+	float light_intensity = 0.0f;
+	static bool isMicrowaveBroken = false;
+
+	static bool wasSKeyPressed = false;
+	static bool repairMicrowave = false;
+	float smoke_scale = 0.7f;   // Početna skala
+	float smoke_opacity = 0.0f; // Početna opacitet
+
 	std::string timer = "00:00";
 	float lastTime = 0.0f;
-	// Main while loop
+
+
 	while (!glfwWindowShouldClose(window)) {
-		// Get the current time
+
 		currentFrameTime = glfwGetTime();
 		deltaTime = currentFrameTime - lastFrameTime;
-		// If enough time has passed to render a new frame
+
 		if (deltaTime >= TARGET_FRAME_TIME) {
-			// Update the last frame time
+
 			lastFrameTime = currentFrameTime;
 
 			glClear(GL_COLOR_BUFFER_BIT);
-			
+
+			// Provera da li je stanje mikrotalasne promenjeno
+			if (microwaveState != previousState) {
+				if (microwaveState == MicrowaveState::Cooking) {
+					soundEngine->play2D("media/cooking.wav", true);
+				}
+				else if (microwaveState == MicrowaveState::Finished) {
+					soundEngine->stopAllSounds();
+					soundEngine->play2D("media/bell.wav", false);
+				}
+				else if (previousState == MicrowaveState::Error) {
+					smoke_scale = 0.7f;
+					smoke_opacity = 0.0f;
+				}
+				else {
+					soundEngine->stopAllSounds();
+				}
+				previousState = microwaveState;
+			}
+
+
 			shaderProgram.Activate();
 
-			
-			glUniform1f(uniID, 0.5f);
-
+			// Draw Background
 			background.Bind();
 			backgroundVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-			
+
+			// Renderovanje dima
+			if (isMicrowaveBroken) {
+				smokeShader.Activate();
+				glUniform1f(smokeScaleLoc, smoke_scale);
+				glUniform1f(smokeOpacityLoc, smoke_opacity);
+				smoke.Bind();
+				smokeVAO.Bind();
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+			}
+			shaderProgram.Activate();
+			// Draw Microwave
 			microwave.Bind();
 			microwaveVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-			// Draw Inside (bind the inside texture)
-			inside.Bind();
+			// Draw Inside
+			updateTexture(microwaveState, insideOn, inside);
 			insideVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-			// Draw Plate (bind the plate texture)
-			plate.Bind();
+			// Draw Plate
+			updateTexture(microwaveState, plateCook, plate);
 			plateVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-			// Draw Food (bind the food texture)
-			food.Bind();
+			// Draw Food
+			updateTexture(microwaveState, foodCook, food);
 			foodVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-			updateLampTexture(microwaveState, lampOn, lampOff);
+			// Draw Lamp
+			updateTexture(microwaveState, lampOn, lampOff);
 			lampVAO.Bind();
 			glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(lamp) / (2 * sizeof(float)));
 
@@ -415,11 +469,11 @@ int main() {
 			glassVAO.Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-			// Draw Door (bind the door texture)
+			// Draw Door
 			doorShader.Activate();
 
-			doorClick(window, doorState, doorAnimationTime, microwaveState);
-			doorOpenFactor = doorOpeningAndClosing(window, doorOpenFactor, doorState, doorAnimationTime, microwaveState);
+			doorClick(window, doorState, doorAnimationTime, microwaveState, soundEngine);
+			doorOpenFactor = doorOpeningAndClosing(window, doorOpenFactor, doorState, doorAnimationTime, microwaveState, soundEngine);
 
 			glUniform1f(doorOpenFactorLocation, doorOpenFactor);
 			door.Bind();
@@ -448,14 +502,84 @@ int main() {
 			}
 			checkButtonClick(window, microwaveState, doorState, timer);
 
-			int pressedNumber = numClick(window);
-			if (pressedNumber != -1) {
-				updateTimer(timer, pressedNumber); // Update the time string based on input
+			int pressedNumber = numClick(window, soundEngine);
+			if (pressedNumber != -1 && (microwaveState == MicrowaveState::Finished || microwaveState ==  MicrowaveState::Idle || microwaveState == MicrowaveState::Paused)) {
+				updateTimer(timer, pressedNumber);
 			}
 
 			textRenderer.RenderText(timer, 1360.0f, 200.0f, 1.2f, 0.5f, 0.7f, 1.0f);
 
-			index.RenderText("Kiss Akos RA11 2021", 20.0f, 820.0f, 1.0f, 0.0f, 0.1f, 0.1f);
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+				index.RenderText("Kiss Akos RA11 2021", 20.0f, 820.0f, 1.0f, 0.0f, 0.1f, 0.1f);
+
+			// detektovanje da li je pritisnut taster X
+			bool isXKeyPressed = glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS;
+			if (isXKeyPressed && !wasXKeyPressed) {
+				isMicrowaveBroken = true;
+				// da ne bi mogli da klikcemo x i da se cuje boom
+				if (microwaveState != MicrowaveState::Error) {
+					soundEngine->play2D("media/boom.wav", false);
+				}
+			}
+			wasXKeyPressed = isXKeyPressed;
+
+			// detektovanje da li je pritisnut taster S
+			bool isSKeyPressed = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+			if (isSKeyPressed && !wasSKeyPressed) {
+				if(microwaveState == MicrowaveState::Error)
+					repairMicrowave = true;
+			}
+			wasSKeyPressed = isSKeyPressed;
+
+			if (repairMicrowave) {
+				if (light_intensity >= 0.0f) {
+					light_intensity -= 0.006f;
+				}
+				else
+				{
+					isMicrowaveBroken = false;
+					microwaveState = MicrowaveState::Idle;
+					repairMicrowave = false;
+					timer = "00:00";
+				}
+			}
+			else if (isMicrowaveBroken) {
+				if (light_intensity < 0.8f) {
+					light_intensity += 0.006f;
+				}
+				if (light_intensity > 0.79f) {
+					microwaveState = MicrowaveState::Error;
+				}
+			}
+
+
+			float error_flash = sin(glfwGetTime() * 5.0f); // Treperi sa periodom 0.2s
+			if (error_flash > 0.0f && microwaveState == MicrowaveState::Error) {
+				timer = "";
+				textRenderer.RenderText("ERROR", 1360.0f, 200.0f, 1.2f, 0.5f, 0.7f, 1.0f); // Prikazivanje treperenja
+			}
+
+			/////////////
+			blackShader.Activate();
+			glUniform1f(lightIntensityLoc, light_intensity);
+
+
+			blackVAO.Bind();
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+			if (repairMicrowave) {
+				if (smoke_scale > 0.7f)
+					smoke_scale -= 0.002f; // Smanji dim
+				if (smoke_opacity > 0.0f)
+					smoke_opacity -= 0.01f;
+			}
+			else if (isMicrowaveBroken) {
+				if(smoke_scale < 1.4f)
+					smoke_scale += 0.002f; // Povećavaj dim
+				if (smoke_opacity < 1.0f) {
+					smoke_opacity += 0.01f; // Smanji opacitet dima
+				}
+			}
 
 			if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 				glfwSetWindowShouldClose(window, true);
@@ -465,65 +589,31 @@ int main() {
 		else {
 			glfwWaitEventsTimeout(TARGET_FRAME_TIME - deltaTime);
 		}
-
 	}
 
-	microwaveVAO.Delete();
-	microwaveVBO.Delete();
-	microwaveEBO.Delete();
-	plateVAO.Delete();
-	plateVBO.Delete();
-	plateEBO.Delete();
-	foodVAO.Delete();
-	foodVBO.Delete();
-	foodEBO.Delete();
-	lampVAO.Delete();
-	lampVBO.Delete();
-	doorVAO.Delete();
-	doorVBO.Delete();
-	doorEBO.Delete();
-	insideVAO.Delete();
-	insideVBO.Delete();
-	glassVAO.Delete();
-	glassVBO.Delete();
-	glassEBO.Delete();
-	backgroundVAO.Delete();
-	backgroundVBO.Delete();
-	backgroundEBO.Delete();
-	microwave.Delete();
-	plate.Delete();
-	food.Delete();
-	lampOn.Delete();
-	lampOff.Delete();
-	door.Delete();
-	shaderProgram.Delete();
-	doorShader.Delete();
-	indicatorShader.Delete();
-	glassShader.Delete();
-
+	soundEngine->drop();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
 }
 
 void generateCircleVertices(float circle[], int numSegments, float centerX, float centerY, float r) {
-	circle[0] = centerX;  // Center X
-	circle[1] = centerY;  // Center Y
+	circle[0] = centerX;
+	circle[1] = centerY;
 
 	for (int i = 0; i <= numSegments; i++) {
-		float angle = (i * 360.0f / numSegments) * (3.141592 / 180); // Convert to radians
-		circle[2 + 2 * i] = centerX + r * cos(angle);       // Xi = centerX + r * cos(angle)
-		circle[2 + 2 * i + 1] = centerY + r * sin(angle);   // Yi = centerY + r * sin(angle)
+		float angle = (i * 360.0f / numSegments) * (3.141592 / 180); // Konvertovanje u radijan
+		circle[2 + 2 * i] = centerX + r * cos(angle);
+		circle[2 + 2 * i + 1] = centerY + r * sin(angle);
 	}
 }
 
-
-void updateLampTexture(MicrowaveState state, Texture& lampOn, Texture& lampOff) {
+void updateTexture(MicrowaveState state, Texture& on, Texture& off) {
 	if (state == MicrowaveState::Cooking) {
-		lampOn.Bind();
+		on.Bind();
 	}
 	else {
-		lampOff.Bind();
+		off.Bind();
 	}
 }
 

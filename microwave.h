@@ -1,17 +1,18 @@
-#ifndef MICROWAVE_H
-#define MICROWAVE_H
+#pragma once
 
-#include <GL/glew.h>    // Include GLEW first
-#include <GLFW/glfw3.h>  // GLFW or other OpenGL-related libraries
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <GL/gl.h> 
 #include "door.h"
 #include "main.h"
 
+enum class DoorState;
+
 enum class MicrowaveState {
-	Idle,       // Microwave is on but not running (e.g., waiting for user input)
-	Cooking,    // Microwave is actively cooking
-	Paused,     // Microwave cooking is paused
-	Error,       // Microwave encountered an error (e.g., overheating or malfunction)
+	Idle,
+	Cooking,
+	Paused,
+	Error,
 	Finished
 };
 
@@ -21,7 +22,5 @@ enum ButtonType {
 	Reset
 };
 
-int numClick(GLFWwindow* window);
+int numClick(GLFWwindow* window, irrklang::ISoundEngine* soundEngine);
 ButtonType checkButtonClick(GLFWwindow* window, MicrowaveState& microwaveState, DoorState doorState, std::string& timer);
-
-#endif
